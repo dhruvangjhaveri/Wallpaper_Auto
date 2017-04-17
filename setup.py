@@ -15,8 +15,7 @@ options = {"build_exe": {"packages": ["PIL", "bs4", "requests", "ctypes", "os", 
                             os.path.join(PYTHON_INSTALL_DIR, 'DLLs', 'tk86t.dll'),
                             os.path.join(PYTHON_INSTALL_DIR, 'DLLs', 'tcl86t.dll'),
                             "wallpapers"
-                         ] + os.listdir("required dlls")}}
-
+                         ] + ["required dlls\\" + file for file in os.listdir("required dlls")]}}
 
 setup(
     name="wallpaperAuto",
@@ -25,3 +24,4 @@ setup(
     description="Searches the Wallpaper of the Day and sets it as the desktop background",
     executables=executables
 )
+
