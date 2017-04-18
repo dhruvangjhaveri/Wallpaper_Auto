@@ -5,7 +5,6 @@ import requests
 from bs4 import BeautifulSoup, SoupStrainer
 from datetime import date
 import urllib.request
-import sys
 
 
 def img_url():
@@ -31,24 +30,19 @@ def set_wallpaper():
     url = img_url()
     image_path = os.getcwd() + "\\" + "wallpapers\\" + str(date.today()) + ".jpeg"
     urllib.request.urlretrieve(url, filename=image_path)
-    temp_img_path = resize_img(image_path)
-    ctypes.windll.user32.SystemParametersInfoW(20, 0, temp_img_path, 3)
-    os.remove(temp_img_path)
+    resize_img(image_path)
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, image_path, 3)
     return None
 
 
 def resize_img(file):
-    temp_img_path = file
-    img_obj = Image.open(file)
-    img_l, img_w = img_obj.size
     user32 = ctypes.windll.user32
     sys_l, sys_w = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-    if img_l > sys_l and img_w > sys_w:
-        x = min(img_l-sys_l, img_w-sys_w)
-        img_obj2 = img_obj.resize((img_l-x, img_w-x))
-        temp_img_path = os.getcwd() + "\\" + "wallpapers\\" + "temp.jpeg"
-        img_obj2.save(temp_img_path)
-    return temp_img_path
+    with Image.open(file) as img_obj:
+        img_obj = img_obj.resize((sys_l, sys_w), Image.ANTIALIAS)
+        img_obj.save(file, "JPEG")
+    return None
 
 
-set_wallpaper()
+if __name__ == "__main__":
+    set_wallpaper()
